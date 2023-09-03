@@ -31,6 +31,7 @@ const User = new Schema({
         type: Date,
         default: Date.now,
       },    
+      pinnedPost:[String]
 },{timestamps:true})
 User.plugin(passportLocalMongoose,{
     usernameField:'email',
