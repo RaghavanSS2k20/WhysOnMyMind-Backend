@@ -13,6 +13,7 @@ const Post = new Schema({
     },
     content:String,
     title:String,
+    description:String
      
     
 

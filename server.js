@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
   origin : "http://localhost:3000",
-  methods:['GET','POST','PUT', 'DELETE'],
+  methods:['GET','POST','PUT', 'DELETE','PATCH'],
 credentials: true }))
 
 app.use(
@@ -93,7 +93,7 @@ app.get('/write',(req,res)=>{
     try{
         const filePath= path.join(process.cwd(),'./landing.md')
         const mdContent = fs.readFileSync(filePath,"utf-8")
-        res.json({content:mdContent})
+        res.json({content:mdContent,id:req.session.postId})
 
     }catch(error){
         console.log('erorr',error)

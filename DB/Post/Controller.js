@@ -1,11 +1,18 @@
 const Post = require('./Model')
-
-const getAllPosts = async(req,res)=>{   
+const getDescriptionFromContent = require('./utils/parse-description')
+const getDesc = (md)=>{
+    const desc = getDescriptionFromContent(md);
+    return desc
+}
+const getAllPosts = async(req,res)=>{  
+    console.log(req.user) 
     try{
+        
         const posts = await Post.find({}).sort({createdAt:-1})
         res.status(200).json({'posts':posts})
     }
     catch(e){
+        console.log(e)
         res.status(500).json({"message":'Internal Server Error','error':e})
     }  
 
@@ -14,8 +21,10 @@ const getAllPosts = async(req,res)=>{
 }
 
 const getById = async(req,res)=>{
+    console.log(req.session)
     if(req.isAuthenticated()){
         const id = req.params.id;
+        console.log(id)
         try{
             const post = await Post.findById(id);
             if(post)
@@ -46,6 +55,7 @@ const CreatePost = async(req,res)=>{
         const title = req.body.title;
         try{
             const newPost = await Post.create({user,category,status,content,title}) 
+            req.session.postId = newPost.id;
             res.status(200).json({"message":'post created succesfully','id':newPost.id})
             
         }catch(e){
@@ -57,7 +67,9 @@ const CreatePost = async(req,res)=>{
 }
 const UpdatePostContent = async (req,res)=>{
     if(req.isAuthenticated()){
+        console.log(req.originalUrl)
         const id = req.params.id
+        const newContent  = req.body.content
         try
         {const updatedPost = await Post.findByIdAndUpdate(id,{ $set: { content: newContent } },{ new: true })
         if(!updatedPost){
@@ -65,12 +77,46 @@ const UpdatePostContent = async (req,res)=>{
         }
         return res.status(200).json({message:'update succesfull'})}
         catch(e){
-            console.log('upodate failoed')
+            console.log('upodate failoed ', e)
             res.status(500).json({message:'internal server error',error:e})
         }
 
     }
 
+}
+const SubmitPost = async (req,res)=>{
+    if(req.isAuthenticated()){
+        
+        const id = req.session.postId;
+        
+        try{
+            console.log(req.originalUrl,id)
+            const p = await Post.findById(id)
+            const desc = getDesc(p.content)
+            console.log(desc)
+            const post = await Post.findByIdAndUpdate(id,{
+                $set:{
+                    status:'POSTED',
+                    title:req.body.title,
+                    category:req.body.category,
+                    description: desc
+                }
+            },{new:true})
+            console.log('the content from func cal',getDesc(post.content))
+            if(!post){
+                console.log('req.session.postId , ',id)
+                return req.status(404).json({message:'post not found'})
+            }
+            
+            return res.status(200).json({message:'posted succesfully',postID:post.id,user:req.user.id,post:post})
+
+        }catch(e){
+            res.status(500).json({message:'internal server error while posting'})
+        }
+
+    }else{
+        req.status(401).json({message:'user must be logged in to post'})
+    }
 }
 
 module.exports = {
@@ -78,4 +124,5 @@ module.exports = {
     getById,
     CreatePost,
     UpdatePostContent,
+    SubmitPost
 }
