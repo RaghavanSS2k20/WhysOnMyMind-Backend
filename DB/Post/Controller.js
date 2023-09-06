@@ -84,6 +84,8 @@ const UpdatePostContent = async (req,res)=>{
     }
 
 }
+
+
 const SubmitPost = async (req,res)=>{
     if(req.isAuthenticated()){
         

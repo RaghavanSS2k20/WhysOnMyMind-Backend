@@ -15,6 +15,7 @@ const passport = require("passport");
 const dotenv = require("dotenv");
 const User = require('./DB/User/Model')
 const Posts = require('./DB/Post/Routes')
+const UserRouter = require('./DB/User/Routes')
 dotenv.config()
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
@@ -127,6 +128,7 @@ app.delete('/logout',(req,res,next)=>{
     
 })
 app.use('/api/post',Posts)
+app.use('/api/user',UserRouter)
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
