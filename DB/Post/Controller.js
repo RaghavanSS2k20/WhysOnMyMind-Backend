@@ -1,14 +1,25 @@
 const Post = require('./Model')
+const User = require('../User/Model')
+const getHeadingFromContent = require('./utils/parse-heading')
 const getDescriptionFromContent = require('./utils/parse-description')
+const getClickUpImageFromContent = require('./utils/parse-image')
 const getDesc = (md)=>{
     const desc = getDescriptionFromContent(md);
     return desc
+}
+const getHdng = (md)=>{
+    const desc = getHeadingFromContent(md);
+    return desc
+}
+const getImg = (md)=>{
+    const img = getClickUpImageFromContent(md)
+    return img
 }
 const getAllPosts = async(req,res)=>{  
     console.log(req.user) 
     try{
         
-        const posts = await Post.find({}).sort({createdAt:-1})
+        const posts = await Post.find({ status: "POSTED" }).sort({createdAt:-1})
         res.status(200).json({'posts':posts})
     }
     catch(e){
@@ -48,14 +59,19 @@ const getById = async(req,res)=>{
 }
 const CreatePost = async(req,res)=>{
     if(req.isAuthenticated()){
+        
         const user = req.user.id;
+        const u = await User.findById(user)
         const category = req.body.category;
         const status = 'DRAFT';
         const content = req.body.content;
         const title = req.body.title;
         try{
             const newPost = await Post.create({user,category,status,content,title}) 
+
             req.session.postId = newPost.id;
+            u.posts.push(newPost._id)
+            await u.save()
             res.status(200).json({"message":'post created succesfully','id':newPost.id})
             
         }catch(e){
@@ -95,16 +111,29 @@ const SubmitPost = async (req,res)=>{
             console.log(req.originalUrl,id)
             const p = await Post.findById(id)
             const desc = getDesc(p.content)
+            const imgSrc = getImg(p.content)
+            let heading  = req.body.title
+            if(req.body.title === "A Valid name of your work?"){
+                console.log("samee")
+                heading =  getHdng(p.content)            
+            }
             console.log(desc)
             const post = await Post.findByIdAndUpdate(id,{
                 $set:{
                     status:'POSTED',
-                    title:req.body.title,
+                    title:heading,
                     category:req.body.category,
-                    description: desc
+                    description: desc,
+                    clickUpImageSrc:imgSrc
                 }
             },{new:true})
-            console.log('the content from func cal',getDesc(post.content))
+            try{
+            req.session.postId=""
+            
+            }catch(e){
+                console.log(e)
+            }
+            console.log('the content from func cal',req.session.postId)
             if(!post){
                 console.log('req.session.postId , ',id)
                 return req.status(404).json({message:'post not found'})

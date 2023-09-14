@@ -1,5 +1,5 @@
 const marked = require('marked')
-const getDescriptionFromContent = (markdownContent) => {
+const getHeadingFromContent = (markdownContent) => {
     // console.log('parse decription called')
     const htmlContent = marked.parse(markdownContent);
 
@@ -36,7 +36,7 @@ const getDescriptionFromContent = (markdownContent) => {
     // const jsonString = JSON.stringify(jsonResult, null, 2);
 
     const jsonData = jsonResult
-    // console.log("children : ",jsonData.children[1])
+    // console.log(jsonData.children)
     const bodyElement = jsonData.children.find((element) => element.tag === "body");
     const firstPTag = bodyElement.children.find((element) => element.tag === "p");
     const firstHeadingTag = bodyElement.children.find((element) => /^h[1-6]$/.test(element.tag)); // Matches any heading tag (h1, h2, h3, ...)
@@ -51,21 +51,6 @@ const getDescriptionFromContent = (markdownContent) => {
     const firstPTagContent = firstPTag.text.replace(/\n/g, '');
     // Log or use the content as needed
     // console.log('tehe first tag is',firstPTagContent);
-    const firstImage = bodyElement.children.find((element) => element.tag === "img");
-    
-    let firstImageAltText = "";
-    if (firstImage && firstImage.attributes && firstImage.attributes.alt) {
-        firstImageAltText = firstImage.attributes.alt.trim();
-    }
-    
-    let firstImageSrc = "";
-    if (firstImage) {
-        firstImageSrc = firstImage.attr("src");
-        if (firstImageSrc) {
-            firstImageSrc = firstImageSrc.trim();
-        }
-    }
-    
-    return firstPTagContent
+    return  firstHeadingTagContent
 }
-module.exports = getDescriptionFromContent
+module.exports = getHeadingFromContent

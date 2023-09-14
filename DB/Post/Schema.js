@@ -13,7 +13,14 @@ const Post = new Schema({
     },
     content:String,
     title:String,
-    description:String
+    description:String,
+    clickUpImageSrc:String,
+    likedBy:[
+        {
+            type:Schema.Types.ObjectId,
+            ref:'User'
+        }
+    ]
      
     
 
