@@ -31,7 +31,10 @@ const User = new Schema({
         type: Date,
         default: Date.now,
       },    
-      pinnedPost:[String],
+      pinnedPost:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Post',
+      }],
       posts:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Post',
@@ -45,7 +48,15 @@ const User = new Schema({
       profileName:{
         type:String,
         unique:true,
-      }
+      },
+      bio:{
+        type:String,
+        default :'Content creator, Being human'
+      },
+      about:{
+        type:mongoose.Schema.Types.ObjectId,
+          ref:'Post'
+      },
       
 },{timestamps:true})
 User.plugin(passportLocalMongoose,{

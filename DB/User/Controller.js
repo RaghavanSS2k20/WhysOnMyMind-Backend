@@ -1,3 +1,4 @@
+
 const Post = require('../Post/Model');
 const User = require('./Model')
 const PinPost = async (req,res)=>{
@@ -133,13 +134,14 @@ const setProfileName = async(req,res)=>{
         res.status(401).json({ message: 'Please login to unlike the post' });
     }
 }
-const getProfileNameById = async ()=>{
-    if(!req.body.userId){
+const getProfileNameById = async (req,res)=>{
+    console.log(req.params.id)
+    if(!req.params.id){
         res.status(400).json({message:"recheck the value"})
                 return
     }
     try{
-    const user =  await User.findById(req.body.userId)
+    const user =  await User.findById(req.params.id)
     if(user.profileName){
         return res.status(200).json({profileName:user.profileName})
 
@@ -151,6 +153,25 @@ const getProfileNameById = async ()=>{
     return
 
 }
+}
+const getCurrentUser = async (req,res)=>{
+    if(req.isAuthenticated()){
+        try{
+            const currentUser = req.user
+            console.log("The host is",req.get('host'))
+            await currentUser.populate({
+                path: 'posts',
+                 // Filter posts with status "posted"
+            });
+
+            return res.status(200).json({user:currentUser})
+        }catch(e){
+            return res.status(500).json({message:"failed to fetch current user",error:e})
+        }
+
+    }else {
+        res.status(401).json({ message: 'Please login to get current ' });
+    }
 }
 const unlikePost = async (req, res) => {
     if (req.isAuthenticated()) {
@@ -203,14 +224,19 @@ const unlikePost = async (req, res) => {
 
 const getPinnedPosts = async(req,res)=>{
     if(req.isAuthenticated()){
+        const isObject = req.query.asObject
+        
+        if(!isObject){
         try{
             const id = req.user.id;
+            
             // console.log("id of the user ", id)
-            const user = await User.findById(id);
+            const user = req.user;
             
             if(!user){
                 console.log(id + " user npot found ")
                 res.status(404).json({message:"user "+id+" not found"})
+                return
             }
             const pinnedPosts = user.pinnedPost
             console.log("pinned posts",pinnedPosts)
@@ -222,6 +248,20 @@ const getPinnedPosts = async(req,res)=>{
             console.log(e)
             res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
         }
+    }else{
+        try{
+            let user = req.user;
+            user = await user.populate('pinnedPost')
+            const pinnedPost = user.pinnedPost
+            return res.status(200).json({"pinned posts":pinnedPost})
+
+
+
+        }catch(e){
+            console.log(e)
+            res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
+        }
+    }
     }else{
         res.status(401).json({message:"please login to get pinned posts"})
 
@@ -237,6 +277,7 @@ const getLikedPostsByUser = async(req,res)=>{
             if(!user){
                 console.log(id + " user npot found ")
                 res.status(404).json({message:"user "+id+" not found"})
+                return
             }
             const likedPosts = user.likedPost
             console.log("pinned posts",likedPosts)
@@ -252,6 +293,35 @@ const getLikedPostsByUser = async(req,res)=>{
         res.json(401).json({message:'please login to get liked post'})
     }
 }
+const getUserByEmail = async(req,res)=>{
+    if(!req.params.email){
+        return res.status(400).json({message:'rechek value'})
+    }
+    try{
+        console.log(req.params.email)
+        const user = await User.findOne({email:req.params.email})
+        if(!user){return res.status(401).json({message:'rechek value'})}
+
+        try{
+        await user.populate({
+            path: 'posts',
+             // Filter posts with status "posted"
+        });
+        
+
+    }catch(e){
+        console.log(e)
+    }
+
+       
+
+
+        return res.status(200).json({user:user})
+    }catch(e){
+        return res.status(500).json({messgae:"nothing good all bad"})
+    }
+}
+
 const getUserById = async (req,res)=>{
     if(req.isAuthenticated()){
         try{
@@ -270,6 +340,33 @@ const getUserById = async (req,res)=>{
         res.status(401).json({message:'please login to get user'})
     }
 }
+const getAllUsers = async(req,res)=>{
+    try{
+    const users = await User.find({}).sort({createdAt:-1})
+    res.status(200).json({users:users})
+    }catch(e){
+        res.status(500).json({message:e})
+    }
+}
+const setUserProfileName = async(req,res)=>{
+    try{
+        if(!req.body.uid && !req.body.profileName){
+            return res.status(400)
+
+        }
+        const user = await User.findById(req.body.uid)
+        user.profileName = req.body.profileName
+        try{
+            await user.save()
+        }catch(e){
+            return res.status(500).json({error:e})
+        }
+        return res.status(200).json({message:user.profileName})
+    }catch(e){
+        return res.status(500).json({error:e})
+
+    }
+}
 // const getCurrentUser = async(req,res)=>{
 //     if(req.isAuthenticated()){
 //         res.status(200).json({"user":req.user.id})
@@ -277,6 +374,68 @@ const getUserById = async (req,res)=>{
 //         res.status(401).json({'message':'please login'})
 //     }
 // }
+
+//BIo
+const setBio = async(req,res)=>{
+    if(req.isAuthenticated()){
+        try{
+            const user = req.user;
+            const newBio = req.body.bio;
+            user.bio = newBio
+            await user.save()
+            return res.status(200).json({message:'bio updated succesfully'})
+        }catch(e){
+            return res.status(500).json({message:'error in setting bio'})
+        }
+
+    }else{
+        return res.status(401).json({message:'please login again'})
+    }
+}
+// const getBioByid = async(req,res)=>{
+//     const userId = req.params.id;
+
+//         try{
+//            const user = await User.findById(userId)
+//             const bio = user.bio
+           
+//             return res.status(200).json({message:'bio fetchd succesfully', bio:bio})
+//         }catch(e){
+//             return res.status(500).json({message:'error in setting bio'})
+//         }
+
+    
+
+// }
+const updateGeneralDetails = async(req,res)=>{
+    if(req.isAuthenticated()){
+        try{
+            const user = req.user;
+            const newProfileName  = req.body.profileName;
+            try{
+                const isValiuser = await User.findOne({profileName:newProfileName})
+                if(isValiuser){
+                    return res.status(400).json({message:'user already exist'})
+                }
+                user.bio = req.body.bio;
+                user.profileName = newProfileName;
+                await user.save()
+                return res.status(200).json({message:'user updated succesfully', user:user})
+            }catch(e){
+                return res.status(500).json({message:'error in updating user'})
+
+            }
+        }catch(e){
+            return res.status(500).json({message:'error in saving user'})
+        }
+           
+       
+    }else{
+        return res.status(401).json({message:'please login again'})
+
+    }
+}
+
 module.exports = {
     PinPost,
     unPinPost,
@@ -286,5 +445,12 @@ module.exports = {
     unlikePost,
     setProfileName,
     getProfileNameById,
-    getLikedPostsByUser
+    getLikedPostsByUser,
+    getAllUsers,
+    setUserProfileName,
+    getUserByEmail,
+    getCurrentUser,
+    setBio,
+    updateGeneralDetails
+    
 }
