@@ -158,13 +158,15 @@ const getCurrentUser = async (req,res)=>{
     if(req.isAuthenticated()){
         try{
             const currentUser = req.user
-            console.log("The host is",req.get('host'))
-            await currentUser.populate({
+            console.log(req.session)
+            await currentUser.populate([{
                 path: 'posts',
                  // Filter posts with status "posted"
-            });
+            },{
+                path:'about'
+            }]);
 
-            return res.status(200).json({user:currentUser})
+            return res.status(200).json({user:currentUser,currentPost:req.session})
         }catch(e){
             return res.status(500).json({message:"failed to fetch current user",error:e})
         }
@@ -253,7 +255,7 @@ const getPinnedPosts = async(req,res)=>{
             let user = req.user;
             user = await user.populate('pinnedPost')
             const pinnedPost = user.pinnedPost
-            return res.status(200).json({"pinned posts":pinnedPost})
+            return res.status(200).json({"pinnedposts":pinnedPost})
 
 
 
@@ -264,6 +266,24 @@ const getPinnedPosts = async(req,res)=>{
     }
     }else{
         res.status(401).json({message:"please login to get pinned posts"})
+
+    }
+}
+//http://localhost:8088/api/user/clear-session
+const clearSession = ()=>{
+    if(req.isAuthenticated()){
+        try{
+            req.session.postId=""
+            return res.status(200).json({message:"Cleared sucessFullyF"})
+
+
+        }catch(e){
+            console.log(e)
+            return res.status(500).json({message:'Error while clearing session',error:e})
+        }
+
+    }else{
+        res.status(401).json({'message':'please login again'})
 
     }
 }
@@ -303,10 +323,12 @@ const getUserByEmail = async(req,res)=>{
         if(!user){return res.status(401).json({message:'rechek value'})}
 
         try{
-        await user.populate({
+        await user.populate([{
             path: 'posts',
              // Filter posts with status "posted"
-        });
+        },{
+            path:'about'
+        }]);
         
 
     }catch(e){
@@ -323,7 +345,7 @@ const getUserByEmail = async(req,res)=>{
 }
 
 const getUserById = async (req,res)=>{
-    if(req.isAuthenticated()){
+    
         try{
             const id = req.params.id;
             const user = await User.findById(id);
@@ -336,9 +358,7 @@ const getUserById = async (req,res)=>{
         }catch(e){
             res.status(500).json({message:"internal server error on getting user by id", error:e})
         }
-    }else{
-        res.status(401).json({message:'please login to get user'})
-    }
+    
 }
 const getAllUsers = async(req,res)=>{
     try{
@@ -414,9 +434,10 @@ const updateGeneralDetails = async(req,res)=>{
             const newProfileName  = req.body.profileName;
             try{
                 const isValiuser = await User.findOne({profileName:newProfileName})
-                if(isValiuser){
+                if(isValiuser && user.id!==isValiuser.id){
                     return res.status(400).json({message:'user already exist'})
                 }
+                console.log("the bio is ",req.body.bio)
                 user.bio = req.body.bio;
                 user.profileName = newProfileName;
                 await user.save()
@@ -451,6 +472,7 @@ module.exports = {
     getUserByEmail,
     getCurrentUser,
     setBio,
-    updateGeneralDetails
+    updateGeneralDetails,
+    clearSession
     
 }

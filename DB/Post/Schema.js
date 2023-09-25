@@ -7,8 +7,8 @@ const Post = new Schema({
         enum:['Life Lesson','Tech Stack','Books','General']
     },
     status:{
-        type:'String',
-        enum:['DRAFT','POSTED','REPORTED']
+        type:'String',// a post for about user
+        enum:['DRAFT','POSTED','REPORTED','ABOUT']
 
     },
     content:String,

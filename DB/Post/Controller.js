@@ -1,3 +1,29 @@
+// const Post = new Schema({
+//     user:String,
+//     category:{
+//         type:String,
+//         enum:['Life Lesson','Tech Stack','Books','General']
+//     },
+//     status:{
+//         type:'String',// a post for about user
+//         enum:['DRAFT','POSTED','REPORTED','ABOUT']
+
+//     },
+//     content:String,
+//     title:String,
+//     description:String,
+//     clickUpImageSrc:String,
+//     likedBy:[
+//         {
+//             type:Schema.Types.ObjectId,
+//             ref:'User'
+//         }
+//     ]
+     
+    
+
+
+// }
 const Post = require('./Model')
 const User = require('../User/Model')
 const getHeadingFromContent = require('./utils/parse-heading')
@@ -33,7 +59,7 @@ const getAllPosts = async(req,res)=>{
 
 const getById = async(req,res)=>{
     console.log(req.session)
-    if(req.isAuthenticated()){
+    
         const id = req.params.id;
         console.log(id)
         try{
@@ -53,8 +79,56 @@ const getById = async(req,res)=>{
             res.status(500).json({'message':'internal server error','error':e})
         }
 
+    
+}
+//http://localhost:8088/api/post/about
+const createAboutPost = async(req,res)=>{
+    if(req.isAuthenticated()){
+        const user = req.user
+        const postUser = user.id
+        const status = 'ABOUT'
+        const content = ""
+        const title = 'About me'
+        try{
+            const aboutPost = await Post.create({
+                user:postUser,
+                status:status,
+                content:content,
+                title:title
+
+            })
+            req.session.postId = aboutPost.id
+            user.about = aboutPost._id
+            await user.save()
+            return res.status(200).json({postid:aboutPost.id})
+            
+        }catch(e){
+            res.status(500).json({'message':'internal server error','error':e})
+        }
+
+
+
     }else{
-        res.status(401).json({'message':'please login'})
+        res.status(401).json({'message':'please login again'})
+
+    }
+}
+//http://localhost:8088/api/user/clear-session
+const clearSession = ()=>{
+    if(req.isAuthenticated()){
+        try{
+            req.session.postId=""
+            return res.status(200).json({message:"Cleared sucessFullyF"})
+
+
+        }catch(e){
+            console.log(e)
+            return res.status(500).json({message:'Error while clearing session',error:e})
+        }
+
+    }else{
+        res.status(401).json({'message':'please login again'})
+
     }
 }
 const CreatePost = async(req,res)=>{
@@ -69,12 +143,17 @@ const CreatePost = async(req,res)=>{
         try{
             const newPost = await Post.create({user,category,status,content,title}) 
 
-            req.session.postId = newPost.id;
+            req.session.postId = newPost._id;
+            try{
             u.posts.push(newPost._id)
             await u.save()
+            }catch(e){
+                console.log(e)
+            }
             res.status(200).json({"message":'post created succesfully','id':newPost.id})
             
         }catch(e){
+            console.log(e)
             res.status(500).json({'message':'internal server error','error':e})
         }
     }else{
@@ -104,15 +183,20 @@ const UpdatePostContent = async (req,res)=>{
 
 const SubmitPost = async (req,res)=>{
     if(req.isAuthenticated()){
-        
+        console.log(req.session)
         const id = req.session.postId;
         
         try{
             console.log(req.originalUrl,id)
             const p = await Post.findById(id)
-            const desc = getDesc(p.content)
-            const imgSrc = getImg(p.content)
+            let desc = ''
+            let imgSrc = ''
+            try{
+             desc = getDesc(p.content)
+            imgSrc = getImg(p.content)
             let heading  = req.body.title
+            }
+            catch(e){console.log(e)}
             if(req.body.title === "A Valid name of your work?"){
                 console.log("samee")
                 heading =  getHdng(p.content)            
@@ -155,5 +239,7 @@ module.exports = {
     getById,
     CreatePost,
     UpdatePostContent,
-    SubmitPost
+    SubmitPost,
+    createAboutPost,
+    
 }

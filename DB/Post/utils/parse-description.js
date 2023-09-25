@@ -14,7 +14,7 @@ const getDescriptionFromContent = (markdownContent) => {
     const result = {
         tag: element[0].name,
     };
-
+    console.log("elelelelelellelllele : ", result)
     if (element.text().trim()) {
         result.text = element.text().trim();
     }
@@ -36,9 +36,9 @@ const getDescriptionFromContent = (markdownContent) => {
     // const jsonString = JSON.stringify(jsonResult, null, 2);
 
     const jsonData = jsonResult
-    // console.log("children : ",jsonData.children[1])
+    console.log("children : ",jsonData.children[1])
     const bodyElement = jsonData.children.find((element) => element.tag === "body");
-    const firstPTag = bodyElement.children.find((element) => element.tag === "p");
+    const firstPTag = bodyElement.children.find((element) => element.tag === "p" && element.text);
     const firstHeadingTag = bodyElement.children.find((element) => /^h[1-6]$/.test(element.tag)); // Matches any heading tag (h1, h2, h3, ...)
 
     let firstHeadingTagContent = "";

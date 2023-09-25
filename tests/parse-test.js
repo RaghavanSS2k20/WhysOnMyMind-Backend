@@ -1,26 +1,31 @@
 const marked = require('marked');
 
 // Your Markdown content
+const fs = require('fs'); // Import the 'fs' module to read the Markdown file
+
+
+
+// Read Markdown content from a file
+const mdownContent = fs.readFileSync('../Beriko.md', 'utf8');
 const markdownContent = `
 
-# So here we are
+# How did We do It
+Hi there! yes.. from Zero to one and from one to here!!!
+![Image](http://localhost:8081/images/6510307ebb5394fd95138ba9)
+
+## Whats our Position Now
+
+Completed Image Handling, had a war with *useState* , *useEffect* and *useRef* 😄, and now to the main part **highlighting text!!**
+pretty much a small accomplishment.. but an Important one...
 
 
-## My Learning Journey
-![Image Alt Text](https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw1CompZ0HyvOf_0HmwLSl-e&ust=1694665764340000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCOipxJLgpoEDFQAAAAAdAAAAABAE)
-**Throughout my life**, I've dived deep into various topics and subjects,
- and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!
- 
 
-## What's in Store?
-
-Here's a glimpse of the exciting content you can expect on WhysOnMyMind:
-
-### SmartyPants - Elevate Your Typographic Game
-
-Did you know that you can use ASCII punctuation characters to create "smart" typographic punctuation in HTML? It's true! For example, try using single backticks to display 
 `;
 
 // Convert Markdown to HTML
-const getDescriptionFromContent = require('../DB/Post/utils/parse-image')
+const getHeadingFromContent = require('../DB/Post/utils/parse-heading')
+const getClickUpImageFromContent = require('../DB/Post/utils/parse-image')
+const getDescriptionFromContent = require('../DB/Post/utils/parse-description')
+//console.log("img",getHeadingFromContent(markdownContent))
+//console.log("imjjjhg",getClickUpImageFromContent(markdownContent))
 console.log("img",getDescriptionFromContent(markdownContent))

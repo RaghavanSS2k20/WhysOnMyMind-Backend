@@ -82,7 +82,7 @@ app.post('/register', function (req, res) {
         res.json({'user':req.user})
     }
     else{
-        res.json({"message":"please login again"})
+      res.status(401).json({message:'please login again'})
     }
   })
   app.get('/test',(req,res)=>{

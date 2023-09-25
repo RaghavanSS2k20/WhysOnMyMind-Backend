@@ -3,7 +3,7 @@ const getClickUpImageFromContent = (markdownContent) => {
     // console.log('parse decription called')
     const htmlContent = marked.parse(markdownContent);
 
-    // console.log(htmlContent);
+    console.log(htmlContent);
     const cheerio = require('cheerio');
 
     // Load the HTML content into cheerio
@@ -16,7 +16,7 @@ const getClickUpImageFromContent = (markdownContent) => {
         };
     
         // Extract attributes
-        // console.log("welement: ",element[0].attribs)
+        console.log("welement: ",result)
         result.attributes = element[0].attribs;
     
         if (element.text().trim()) {
@@ -39,7 +39,7 @@ const getClickUpImageFromContent = (markdownContent) => {
     
     
     
-
+   
     // Convert the entire HTML document to JSON
     const jsonResult = elementToJson($('html'));
 
@@ -47,10 +47,12 @@ const getClickUpImageFromContent = (markdownContent) => {
     // const jsonString = JSON.stringify(jsonResult, null, 2);
 
     const jsonData = jsonResult
-    
-    // console.log("children : ",jsonData.children[1].children[2])
+    console.log("gsggsggsggsggsggsggsggsggsggsggsgggs",jsonData)
+    console.log("children : ",jsonData.children[1].children)
     const bodyElement = jsonData.children.find((element) => element.tag === "body");
-    const firstPTag = bodyElement.children.find((element) => element.tag === "p");
+    const firstPTag = bodyElement.children.find((element) => element.tag === "p" && element.text);
+    const firstImageTag = bodyElement.children.find((element) => element.tag === "p" && element.children && element.children[0].tag=="img");
+    console.log('GGDGGDGGDGGDGGDGGDGD',firstImageTag)
     const firstHeadingTag = bodyElement.children.find((element) => /^h[1-6]$/.test(element.tag)); // Matches any heading tag (h1, h2, h3, ...)
 
     let firstHeadingTagContent = "";
@@ -60,9 +62,9 @@ const getClickUpImageFromContent = (markdownContent) => {
     // console.log("heading: ",firstHeadingTagContent)
     // Get the text content of the first <p> tag
 
-    const firstPTagContent = firstPTag.text.replace(/\n/g, '');
+    
     // Log or use the content as needed
-    // console.log('tehe first tag is',firstPTagContent);
+    console.log('tehe first tag is',firstPTag);
     // const firstImage = bodyElement.children.find((element) => element.tag === "img");
     
     // let firstImageAltText = "";
@@ -73,11 +75,11 @@ const getClickUpImageFromContent = (markdownContent) => {
     let firstImage = null;
 let firstImageSrc = "";
 
-if (firstPTag) {
+if (firstImageTag.children) {
     // Find the first `img` tag within the `p` tag
-    firstImage = firstPTag.children.find((element) => element.tag === "img");
+    firstImage = firstImageTag.children.find((element) => element.tag === "img");
 }
-// console.log("imaegghege: ", firstImage.attributes.src)
+console.log("imaegghege: ", firstImage)
 // If a `img` tag is found, get its `src` attribute
 if (firstImage && firstImage.attributes && firstImage.attributes.src) {
     firstImageSrc = firstImage.attributes.src.trim();

@@ -14,7 +14,9 @@ const  {
     getUserByEmail,
     getCurrentUser,
     setBio,
-    updateGeneralDetails
+    clearSession,
+    updateGeneralDetails,
+    
 
 } = require('./Controller')
 const router = express.Router()
@@ -32,4 +34,5 @@ router.patch('/like',likePost)
 router.patch('/unlike', unlikePost)
 router.patch('/set/profilename', setUserProfileName)
 router.patch('/save/general', updateGeneralDetails)
+router.delete('/clear-session',clearSession)
 module.exports  = router

@@ -48,7 +48,7 @@ const getHeadingFromContent = (markdownContent) => {
     // console.log("heading: ",firstHeadingTagContent)
     // Get the text content of the first <p> tag
 
-    const firstPTagContent = firstPTag.text.replace(/\n/g, '');
+   
     // Log or use the content as needed
     // console.log('tehe first tag is',firstPTagContent);
     return  firstHeadingTagContent
