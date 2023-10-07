@@ -32,6 +32,7 @@ const PinPost = async (req,res)=>{
 
     
 }
+//PATCH  localhost http://localhost:8088/api/user/unpinpost
 const unPinPost = async (req,res)=>{
     if(req.isAuthenticated()){
         try{
@@ -40,7 +41,9 @@ const unPinPost = async (req,res)=>{
                 return res.status(404).json({'message':'user not found'})
             }
             const postIdToRemove = req.body.postId
-            user.pinnedPost = user.pinnedPost.filter((postId) => postId !== postIdToRemove);
+            console.log("req post id to be remoberd : ",postIdToRemove)
+            user.pinnedPost = user.pinnedPost.filter((postId) => !postId.equals(postIdToRemove));
+            console.log("pinned post after remove : ", user.pinnedPost)
 
             // Save the updated user document
             try {
