@@ -255,7 +255,7 @@ const getPinnedPosts = async(req,res)=>{
             let user = req.user;
             user = await user.populate('pinnedPost')
             const pinnedPost = user.pinnedPost
-            return res.status(200).json({"pinnedposts":pinnedPost})
+            return res.status(200).json({"pinnedposts":pinnedPost, "user":user})
 
 
 

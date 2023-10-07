@@ -1,0 +1,351 @@
+{
+    "posts": [
+        {
+            "_id": "6511b8914bd4644a30edb329",
+            "user": {
+                "_id": "65102fbbec4cb0925945063b",
+                "email": "rn75creatography@gmail.com",
+                "profileName": "Me@WoM"
+            },
+            "status": "POSTED",
+            "content": "# How did We do It\nHi there! yes.. from Zero to one and from one to here!!!\n\n![Image](http://localhost:8081/images/6510307ebb5394fd95138ba9)\n\n## Whats our Position Now\n\nCompleted Image Handling, had a war with *useState* , *useEffect* and *useRef* 😄, and now to the main part **highlighting text!!**\npretty much a small accomplishment.. but an Important one...\n\n## What'sThe problem 😕\n\nSo we must highlight the text and preserve it.. inorder to highlight.. We must insert a **<span/>** at both the selected texts...\n\nExample:-\n```\n<p>Hello world</p>\n\n//if im highlighting  Hello from hello world, then it must be like\n\n<p><span class=\"highlight\">Hello</span></p>\n```\nhow do we do it??\n\nwith the help of\n> *const range = selection.getRangeAt(0);*\n\nwhats this now?? in order to understand we must understand about ***DOM*** so called ***Document Object Model***\n\n\n-----------\n\n\n## Document Object Model\nParses HTML to a tree like structure.. Thats a DOM.\n\nA DOM is a Tree like representation of HTML document..\nIn this representation, each element, attribute, and text node in the document is represented as a node in a hierarchical tree structure. This tree structure makes it easy for developers to access, manipulate, and interact with the content and structure of the document using programming languages like JavaScript. It's a fundamental concept in web development for creating dynamic and interactive web pages.\n\n![DOM](https://www.lambdatest.com/blog/wp-content/uploads/2023/01/image18-27.png)\n\nSo by Having a pictorical representation of DOM lets get into code explanation\n\n> *const range = selection.getRangeAt(0);*\n\n### Whats selection here??\nThe selection object represents the **current text selection** or **caret position** within a document in the DOM. It's a built-in JavaScript object that browsers provide to interact with selected text on a web page.\n \n### Now Whats \"getRange\" 😕\nIts normal to be frustated when we are bombared with JS concepts..Like are we even human if we dont??\n\nIll make or push myself to explain as simple as posible...\n The *getRangeAt()* method is used on the **selection object** to retrieve a *range object*. A \"range\" in the DOM represents *a specific portion of the document*, typically a selected text range. By passing 0 as an argument to a ***getRangeAt()***, you are requesting *The first range in the selection*.\n\nThe range variable receives the range object obtained from getRangeAt(0). This range object represents the selected text or the portion of the document where the user has made a text selection.\n\nWith the range object, you can perform various operations on the selected text or within the selected portion of the document. For example:\n\n- You can extract the selected text using range.toString() or similar methods.\n- You can modify the selected text or apply formatting to it.\n- You can insert new content at the selected position.\n- You can manipulate the DOM within the selected range.\n\nThis is commonly used in web applications to enable users to interact with and manipulate text on a web page, such as highlighting text, applying styles, or copying selected content. It's a powerful feature for building dynamic and user-friendly interfaces.\n\nso We made it..., just add a span tag and thats it...! it is??\n\n![Image](http://localhost:8081/images/651062b7bb5394fd95138bb8)\nWell, Sadly this is not that simple. The above technique will only work if we have plain text enclosed in a single div. In blogs like **WhysOnMyMind**, the text is enclosed in a nested structure of DOM. So, the problem here is quite complex.\n\nNow, moving on towards the solutions,We know that how we can get the range object. Through this object we can access the whole tree information.\n\nWe can start wrapping our selected text range and if we have any non-closed child at the end of range. We will close it first and then close our highlight wrapper. The resulting blog post will look like this:\n```\n<p>\n\n<span class=”highlight”>\nLorem Ipsum <a href=”abc.com”> has been</a>\n</span> the</a> \n\n</p>\n```\n\nNow, if we see carefully, we have a problem. We have a anchor tag ( <a> ) after span who has no parent. To solve this problem, we have to add a starting tag of the same child element present in the highlight <span> element.\n\nNow, the correct output shall look like this:\n\n```\n<p>\n\n<span class=”highlight”>Lorem Ipsum <a href=”abc.com”>has been</a></span><a href=”abc.com”> the</a> industry’s standard dummy text ever since the 1500s, when an unknown printer <b> took a galley </b>of type and scrambled <i>it to</i> make a type specimen book. It has survived not only <a href=”abc.com”>five centuries</a>\n\n</p>\n```\nLooks like we have solved the problem. Well, thats is not quite true. Let me explain, We have highlighted the text successfully, but what about remove the highlight from the text? . Other than removing the highlight span tag ( <span class=”highlight”> ) we also have to remove all the manually altered child element tags that we added to avoid DOM destructuring. i-e (<a href=”abc.com”> )\n\nThis can become very costly task in terms of computation. This is because that other than the selected text range, we also have to extract the outer text range object to access its tree structure for manipulation.\n\nThe illustrated example is a very simple. If we think of situations where we have 10 to 12 incomplete child tags, even highlighting can be a very costly task.😕\n\n### What we have done to solve?🎉\n\n#### Safe Ranges?\n\n> Safe ranges are portions of the user's selection where there are no incomplete closing child elements\n\n\nTo get safe ranges, we have to traverse the full ***DOM*** tree in the current selected text range. ***We have the find all the incomplete child element*** nodes and then ***split the range*** on the incomplete child nodes.\n suppoose if user selects \n\n>`<p> Hello world <a href=\"/someshit\"> is the`\n\nwe would split at `<href>` tag that is unclosed, and inorder to obtain safe ranges,\n\n>`<p<span> Hello world </span><a href=\"/someshit><span>is the </span>`\n\nGuess What it worked🎉\n\nWe havent completely solved the problem but we will\n\n##### spread ❤️,\n##### WhysOnMyMind\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T16:42:57.703Z",
+            "updatedAt": "2023-09-25T16:43:30.317Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "http://localhost:8081/images/6510307ebb5394fd95138ba9",
+            "description": "Hi there! yes.. from Zero to one and from one to here!!!",
+            "title": "How did We do It"
+        },
+        {
+            "_id": "6511415f8ed15d01e7f515d0",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# How did We do It\nHi there! yes.. from Zero to one and from one to here!!!\n![Image](http://localhost:8081/images/6510307ebb5394fd95138ba9)\n\n## Whats our Position Now\n\nCompleted Image Handling, had a war with *useState* , *useEffect* and *useRef* 😄, and now to the main part **highlighting text!!**\npretty much a small accomplishment.. but an Important one...\n\n## What'sThe problem \n\nSo we must highlight the text and preserve it.. inorder to highlight.. We must insert a **<span/>** at both the selected texts...\n\n### smartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T08:14:23.421Z",
+            "updatedAt": "2023-09-25T16:35:56.395Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "http://localhost:8081/images/6510307ebb5394fd95138ba9",
+            "description": "Hi there! yes.. from Zero to one and from one to here!!!",
+            "title": "How did We do It"
+        },
+        {
+            "_id": "651141378ed15d01e7f515be",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!.\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T08:13:43.549Z",
+            "updatedAt": "2023-09-25T08:13:49.627Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!.",
+            "title": "Welcome to WhysOnMyMind!"
+        },
+        {
+            "_id": "6511408d8ed15d01e7f5157c",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!👎👎👎👎 \n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all! \n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T08:10:53.375Z",
+            "updatedAt": "2023-09-25T08:12:02.074Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to WhysOnMyMind!👎👎👎👎"
+        },
+        {
+            "_id": "65113ff58ed15d01e7f51553",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# Hoo haa\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T08:08:21.411Z",
+            "updatedAt": "2023-09-25T08:11:07.261Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Hoo haa"
+        },
+        {
+            "_id": "651136cc7b505208f25e91f7",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!\r\n\r\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\r\n\r\n## My Learning Journey\r\n\r\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\r\n\r\n## What's in Store?\r\n\r\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\r\n\r\n### SmartyPants - Elevate Your Typographic Game\r\n\r\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\r\n\r\n### Unraveling Mathematical Marvels with KaTeX\r\n\r\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\r\n\r\n$$\r\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\r\n$$\r\n\r\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\r\n\r\n### Visualizing Ideas with UML Diagrams\r\n\r\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\r\n\r\n```mermaid\r\nsequenceDiagram\r\nAlice ->> Bob: Hello Bob, how are you?\r\nBob-->>John: How about you John?\r\nBob--x Alice: I am good thanks!\r\nBob-x John: I am good thanks!\r\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\r\n\r\nBob-->Alice: Checking with John...\r\nAlice->John: Yes... John, how are you?\r\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T07:29:16.512Z",
+            "updatedAt": "2023-09-25T07:29:27.006Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to WhysOnMyMind!"
+        },
+        {
+            "_id": "6511368b7b505208f25e91d5",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to Test agai\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-25T07:28:11.385Z",
+            "updatedAt": "2023-09-25T07:28:15.667Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to Test agai"
+        },
+        {
+            "_id": "651070ff05459ecfa042add0",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!\nHe h\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-24T17:25:19.517Z",
+            "updatedAt": "2023-09-24T17:25:22.255Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "He hHi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to WhysOnMyMind!"
+        },
+        {
+            "_id": "65106bdc3e81414628daa764",
+            "user": {
+                "_id": "64e59cb297cc3ffed1823415",
+                "email": "cardmelepadhinaarunumbersolungo@vadakkan.com",
+                "profileName": "VadanaatuKaaran"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind! he\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-24T17:03:24.702Z",
+            "updatedAt": "2023-09-24T17:03:29.406Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to WhysOnMyMind! he"
+        },
+        {
+            "_id": "6501b963f8053f7980a7c1ba",
+            "user": {
+                "_id": "65019897dc3112eaa15a1d74",
+                "email": "thelamboghinithen@darkknight.com",
+                "profileName": "WillYouneedABatPodSir"
+            },
+            "status": "POSTED",
+            "content": "# Well we'll test router to\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [
+                "64f5e06882c898e85ba2718a"
+            ],
+            "createdAt": "2023-09-13T13:30:11.554Z",
+            "updatedAt": "2023-09-20T13:48:31.678Z",
+            "__v": 1,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Well we'll test router to"
+        },
+        {
+            "_id": "6501b8ebf8053f7980a7c15f",
+            "user": {
+                "_id": "65019897dc3112eaa15a1d74",
+                "email": "thelamboghinithen@darkknight.com",
+                "profileName": "WillYouneedABatPodSir"
+            },
+            "status": "POSTED",
+            "content": "# You know how i got these scar\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-13T13:28:11.706Z",
+            "updatedAt": "2023-09-13T13:28:23.241Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "You know how i got these scar"
+        },
+        {
+            "_id": "6501b86892afb991ff8551cf",
+            "user": {
+                "_id": "65019897dc3112eaa15a1d74",
+                "email": "thelamboghinithen@darkknight.com",
+                "profileName": "WillYouneedABatPodSir"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!\n\njust testin\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-13T13:26:00.306Z",
+            "updatedAt": "2023-09-13T13:26:07.978Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "just testinHi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to WhysOnMyMind!"
+        },
+        {
+            "_id": "6501b7cd92afb991ff855192",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to Test agai\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [
+                "64f5e06882c898e85ba2718a"
+            ],
+            "createdAt": "2023-09-13T13:23:26.000Z",
+            "updatedAt": "2023-09-21T07:35:05.665Z",
+            "__v": 1,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "Welcome to Test agai"
+        },
+        {
+            "_id": "65019449438983d0e2e3bde7",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# Why Dark knight stays at top?\n\n![Image](http://localhost:8081/images/6501952749ded5c7399f8688)\nLike is there any other flim\n\"The Dark Knight\" is often hailed as one of the greatest films of all time, and there are several compelling reasons for its acclaim. Let's dive into what makes it stand out:\n\n### Exceptional Performances\n\n#### Heath Ledger as the Joker\n\nHeath Ledger's portrayal of the Joker is nothing short of legendary. His performance is chilling, captivating, and unforgettable. Ledger's commitment to the role and his ability to bring depth to the character make the Joker a truly iconic antagonist.\n\n### Complex Characters\n\n#### Bruce Wayne / Batman\n\nChristopher Nolan's Batman trilogy, with \"The Dark Knight\" at its peak, explores the complexities of the Batman character like never before. Bruce Wayne's internal struggles and moral dilemmas add layers to the superhero persona.\n\n### Engaging Storytelling\n\n#### Dark and Gritty Narrative\n\nNolan's decision to take Batman into a darker, more realistic world sets \"The Dark Knight\" apart from other superhero films. The gritty narrative explores themes of chaos, morality, and the consequences of vigilantism.\n\n### Cinematic Excellence\n\n#### Stunning Visuals and Practical Effects\n\nThe film's visual effects and practical stunts are breathtaking. The use of IMAX cameras for key sequences immerses the audience in Gotham City's chaos. Nolan's dedication to practical effects adds authenticity to the action scenes.\n\n### Iconic Quotes\n\n#### Memorable Dialogues\n\n\"The Dark Knight\" is packed with memorable lines, especially from the Joker. Lines like \"Why so serious?\" and \"I'm not a monster; I'm just ahead of the curve\" have become iconic in their own right.\n\n### Impact on the Genre\n\n#### Redefining Superhero Movies\n\n\"The Dark Knight\" redefined what a superhero movie could be. It set a high bar for storytelling and character development within the genre, inspiring future filmmakers to explore complex themes.\n\n### Legacy\n\n#### Lasting Influence\n\nEven years after its release, \"The Dark Knight\" continues to influence the filmmaking industry and how superhero stories are told. Its impact on cinema is undeniable.\n\nIn conclusion, \"The Dark Knight\" earns its status as one of the best films ever made through outstanding performances, complex characters, exceptional storytelling, cinematic excellence, memorable quotes, genre redefinition, and a lasting legacy in the world of film.\nFeel free to customize and expand on these points to create a comprehensive discussion about why \"The Dark Knight\" is regarded as one of the best films in cinematic history.\n\n\n\n  \n\n> *you either die a hero or you live long enough to see yourself becoming the viillan -Harvey den*\n\n\n\n\n\n\n\n\n",
+            "likedBy": [
+                "65019897dc3112eaa15a1d74"
+            ],
+            "createdAt": "2023-09-13T10:51:53.267Z",
+            "updatedAt": "2023-09-13T13:37:29.358Z",
+            "__v": 1,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "http://localhost:8081/images/6501952749ded5c7399f8688",
+            "description": "Like is there any other flim\"The Dark Knight\" is often hailed as one of the greatest films of all time, and there are several compelling reasons for its acclaim. Let's dive into what makes it stand out:",
+            "title": "Why Dark knight stays at top?"
+        },
+        {
+            "_id": "65016166d1784fd56889fa63",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# Lets test first Hookup image!\n\nWe have made it all way here... so lets test first hookup image!!\n![Image](http://localhost:8081/images/650161b6444542a0150404e9)\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "likedBy": [],
+            "createdAt": "2023-09-13T07:14:46.940Z",
+            "updatedAt": "2023-09-13T07:20:20.463Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "clickUpImageSrc": "http://localhost:8081/images/650161b6444542a0150404e9",
+            "description": "We have made it all way here... so lets test first hookup image!!",
+            "title": "Lets test first Hookup image!"
+        },
+        {
+            "_id": "64f9d299218785fea1b538fc",
+            "user": {
+                "_id": "64f5e06882c898e85ba2718a",
+                "email": "alittlefightinyou@darkknight.com",
+                "profileName": "DogChasingCars"
+            },
+            "status": "POSTED",
+            "content": "# So here we are testing again\n\nLets test and you know what popover is working..\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with UML Diagrams\n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "createdAt": "2023-09-07T13:39:37.815Z",
+            "updatedAt": "2023-09-13T04:07:59.926Z",
+            "__v": 9,
+            "category": "Life Lesson",
+            "description": "Lets test and you know what popover is working..",
+            "title": "So here we are testing again",
+            "likedBy": [
+                "64f5e06882c898e85ba2718a",
+                "64f5e06882c898e85ba2718a",
+                "64f5e06882c898e85ba2718a",
+                "64f5e06882c898e85ba2718a"
+            ]
+        },
+        {
+            "likedBy": [],
+            "_id": "64f48bafeb76174f40f56453",
+            "user": {
+                "_id": "64f48b95eb76174f40f56449",
+                "email": "20pw26@psgtech.ac.in",
+                "profileName": "RaghavanCollegeId"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to WhysOnMyMind!\n\nHi there! Welcome to **WhysOnMyMind**, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n",
+            "createdAt": "2023-09-03T13:35:43.104Z",
+            "updatedAt": "2023-09-03T14:14:42.219Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "description": "Hi there! Welcome to WhysOnMyMind, a place where I share all the fascinating things I've learned in my life. Here, you'll find a treasure trove of knowledge, musings, and discoveries. So, buckle up and let's embark on an adventure of learning and exploration!",
+            "title": "A Valid name of your work?"
+        },
+        {
+            "likedBy": [],
+            "_id": "64f0c98f780a5cfa0363eccb",
+            "user": {
+                "_id": "64ef432073ea7bf33815cdc7",
+                "email": "bairavisvery2goodboy@canine.com",
+                "profileName": "RaghavanCollegeId"
+            },
+            "status": "POSTED",
+            "content": "# Welcome to Test post!\nThis post is to check wether i can see them in post/:id route\n## My Learning Journey\n\n**Throughout my life**, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\nso whats the plan\nbd\n## What's in Store?\n\nHere's a glimpse of the exciting content you can expect on WhysOnMyMind:\n❤️\n### SmartyPants - Elevate Your Typographic Game\n\nDid you know that you can use ASCII punctuation characters to create \"smart\" typographic punctuation in HTML? It's true! For example, try using single backticks to display `'Isn't this fun?'`, or double quotes to show `\"Isn't this fun?\"`. And don't forget en-dashes and em-dashes: `-- is en-dash, --- is em-dash`.\n\n### Unraveling Mathematical Marvels with KaTeX\n\nAre you a math enthusiast? I sure am! Let's dive into the world of mathematical expressions using KaTeX. For instance, the Gamma function $\\Gamma(n) = (n-1)! \\quad \\forall n\\in\\mathbb N$ is intriguingly linked to the Euler integral:\n\n$$\n\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\n$$\n\n> Explore more about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).\n\n### Visualizing Ideas with \n\nCommunicating complex ideas can be a breeze with UML diagrams. We'll use Mermaid to create awesome diagrams, like this sequence diagram:\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "createdAt": "2023-08-31T17:10:39.574Z",
+            "updatedAt": "2023-09-02T16:18:29.523Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "title": "A Valid name of your work?"
+        },
+        {
+            "likedBy": [],
+            "_id": "64ef45f8efe7891f85fb9863",
+            "user": {
+                "_id": "64ef0b3d48b24c7242edc64e",
+                "email": "thefoolishguy@fmman.com",
+                "profileName": "thefoolishguy"
+            },
+            "status": "POSTED",
+            "content": "# Hello guys\n\nWelcome to my youtube channe\n\n## My Learning Journey\n\nThroughout my life, I've dived deep into various topics and subjects, and I can't wait to share them with you. From programming languages to scientific theories, from artistic endeavors to philosophical ponderings, I've explored it all!\n\n\n\n```mermaid\nsequenceDiagram\nAlice ->> Bob: Hello Bob, how are you?\nBob-->>John: How about you John?\nBob--x Alice: I am good thanks!\nBob-x John: I am good thanks!\nNote right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.\n\nBob-->Alice: Checking with John...\nAlice->John: Yes... John, how are you?\n",
+            "createdAt": "2023-08-30T13:36:56.507Z",
+            "updatedAt": "2023-08-31T03:59:38.497Z",
+            "__v": 0,
+            "category": "Life Lesson",
+            "title": "A Valid name of your work?"
+        }
+    ]
+}

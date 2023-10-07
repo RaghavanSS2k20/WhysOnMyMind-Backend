@@ -41,11 +41,12 @@ const getImg = (md)=>{
     const img = getClickUpImageFromContent(md)
     return img
 }
+//http://localhost:8088/api/post
 const getAllPosts = async(req,res)=>{  
     console.log(req.user) 
     try{
         
-        const posts = await Post.find({ status: "POSTED" }).sort({createdAt:-1})
+        const posts = await Post.find({ status: "POSTED" }).sort({createdAt:-1}).populate('user', 'email profileName');
         res.status(200).json({'posts':posts})
     }
     catch(e){
@@ -56,7 +57,7 @@ const getAllPosts = async(req,res)=>{
 
 
 }
-
+//http://localhost:8088/api/post/:id
 const getById = async(req,res)=>{
     console.log(req.session)
     

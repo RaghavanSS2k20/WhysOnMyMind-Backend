@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Highlighting</title>
+    <style>
+        .highlight {
+            background-color: yellow; /* Apply a yellow background to highlighted text */
+        }
+    </style>
+</head>
+<body>
+    <button id="highlightButton">Highlight</button> <!-- Added button at the top -->
+
+    <p>
+
+        Lorem Ipsum <a href="abc.com">has been the</a> industry’s standard dummy text ever since the 1500s, when an unknown printer <b> took a galley </b>of type and scrambled <i>it to</i> make a type specimen book. It has survived not only <a href="abc.com">five centuries</a>
+
+    </p>
+
+    <script>
+        function wrapTextWithHighlight(selection) {
+            if (!selection || selection.isCollapsed) {
+                return; // No text selected or empty selection
+            }
+
+            const range = selection.getRangeAt(0);
+
+            // Function to wrap a range in a specified element with a class
+            function wrapRangeInElement(range, elementTag, className) {
+                const wrapper = document.createElement(elementTag);
+                wrapper.classList.add(className);
+
+                range.surroundContents(wrapper);
+            }
+
+            // Function to find incomplete child nodes and split the range
+            function splitRangeOnIncompleteChildNodes(range) {
+                const startContainer = range.startContainer;
+                const endContainer = range.endContainer;
+
+                if (startContainer.nodeType === 1 && !startContainer.contains(range.startOffset)) {
+                    // Start container has incomplete child nodes
+                    const newRange = document.createRange();
+                    newRange.setStartAfter(startContainer);
+                    newRange.setEnd(range.endContainer, range.endOffset);
+                    return newRange;
+                }
+
+                if (endContainer.nodeType === 1 && !endContainer.contains(range.endOffset)) {
+                    // End container has incomplete child nodes
+                    const newRange = document.createRange();
+                    newRange.setStart(range.startContainer, range.startOffset);
+                    newRange.setEndBefore(endContainer);
+                    return newRange;
+                }
+
+                return range;
+            }
+
+            // Find safe ranges
+            const safeRanges = [];
+            let currentRange = range.cloneRange();
+
+            while (currentRange.toString().trim() !== "") {
+                const safeRange = splitRangeOnIncompleteChildNodes(currentRange);
+                safeRanges.push(safeRange);
+
+                // Move the current range to the next portion
+                currentRange = splitRangeOnIncompleteChildNodes(currentRange);
+            }
+
+            // Wrap safe ranges in a highlighted span
+            safeRanges.forEach((safeRange) => {
+                wrapRangeInElement(safeRange, 'span', 'highlight');
+            });
+        }
+
+        // Example usage: Call wrapTextWithHighlight with the user's selection
+        const userSelection = window.getSelection();
+
+        // Add a click event listener to the "Highlight" button
+        const highlightButton = document.getElementById('highlightButton');
+        highlightButton.addEventListener('click', () => {
+            wrapTextWithHighlight(userSelection);
+        });
+    </script>
+</body>
+</html>
