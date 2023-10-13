@@ -38,13 +38,13 @@ app.use(
       saveUninitialized: false,
       proxy: true,
       store: MongoStore.create({ mongoUrl: process.env.MONGOURI  }),
-      // cookie:{
-      //   maxAge : 3600000,
-      //   secure: false,
-      //   sameSite:'none',
-      //   domain:"4a08-2409-408d-1e13-b69f-65b8-971f-a872-2a7c.ngrok-free.app"
+      cookie:{
+        maxAge : 3600000,
+        secure: true,
+        sameSite:'none',
        
-      // }
+       
+      }
       //store: new MongoStore({ mongooseConnection: mongoose.connection}),
     })
   );
