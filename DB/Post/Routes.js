@@ -4,6 +4,7 @@ const {getAllPosts,
     CreatePost,
     createAboutPost,
     UpdatePostContent,
+    updateHighlightedText,
 SubmitPost} = require('./Controller')
 const router = express.Router()
 //http://localhost:8088/api/post
@@ -13,4 +14,5 @@ router.post('/create',CreatePost)
 router.post('/about', createAboutPost)
 router.patch('/update/content/:id',UpdatePostContent)
 router.patch('/submit',SubmitPost)
+router.patch('/update/highlight/:id',updateHighlightedText)
 module.exports = router;

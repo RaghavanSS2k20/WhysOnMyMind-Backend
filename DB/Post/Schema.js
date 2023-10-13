@@ -23,6 +23,17 @@ const Post = new Schema({
             type:Schema.Types.ObjectId,
             ref:'User'
         }
+    ],
+    highlights:[
+        {
+            user:{
+                type:Schema.Types.ObjectId,
+                ref:'User'
+            },
+            highlightedText:{
+                type:String
+            }
+        }
     ]
      
     

@@ -60,7 +60,8 @@ const getAllPosts = async(req,res)=>{
 //http://localhost:8088/api/post/:id
 const getById = async(req,res)=>{
     console.log(req.session)
-    
+    if(!req.user)
+    {
         const id = req.params.id;
         console.log(id)
         try{
@@ -68,6 +69,7 @@ const getById = async(req,res)=>{
             if(post)
             {
                 res.status(200).json({
+                isAuthenticated:false,
                 "message":'post found',
                 'post':post
             })}
@@ -80,8 +82,95 @@ const getById = async(req,res)=>{
             res.status(500).json({'message':'internal server error','error':e})
         }
 
-    
+    }else{
+        const id = req.params.id;
+        console.log(id)
+        try{
+            const post = await Post.findById(id);
+            post.populate({
+                path:'highlights',
+                match:{ user: req.user.id },
+                select: 'highlightedText'
+            })
+            
+            
+            if(post)
+            {
+                return res.status(200).json({
+                isAuthenticated:true,
+                "message":'post found',
+                'post':{
+                    post,
+                    userHighlighted: post.highlights
+                }
+                
+            })}
+            else{
+                return res.status(404).json({
+                    "message":'post not found'
+                })
+            }
+        }catch(e){
+           return res.status(500).json({'message':'internal server error','error':e})
+        }
+
+    }
 }
+//PATCH http://localhost:8088/api/post/update/highlight/:id
+const updateHighlightedText = async(req,res)=>{
+    if(req.user)
+    {const postId = req.params.id
+        console.log(postId)
+    const userId = req.user.id;
+    let post
+    try{
+        try{
+         post = await Post.findById(postId.trim());
+        }catch(e){
+            console.log(e)
+        }
+        if (!post) {
+            return res.status(404).json({
+                message: 'Post not found'
+            });
+        }
+        const highlightIndex = post.highlights.findIndex(
+            (highlight) => highlight.user.toString() === userId
+        );
+try{
+        if (highlightIndex === -1) {
+            // If the user doesn't have a highlight, create a new one
+            post.highlights.push({
+                user: userId,
+                highlightedText: req.body.highlightedText
+            });
+        } else {
+            // Update the existing highlight
+            post.highlights[highlightIndex].highlightedText = req.body.highlightedText;
+        }
+    }catch(e){
+        console.log(e)
+    }
+        // Save the updated post
+        let updatedPost
+        try{
+         updatedPost = await post.save();
+        }catch(e){
+            console.log(e)
+        }
+
+        return res.status(200).json({
+            message: 'Highlight updated successfully',
+            post: updatedPost
+        });
+
+    }catch(e){
+        return  res.status(500).json({ message: 'Internal server error', error: e });
+
+    }
+}else{
+    return res.status(401).json({ message: 'please login to highlight',});
+}}
 //http://localhost:8088/api/post/about
 const createAboutPost = async(req,res)=>{
     if(req.isAuthenticated()){
@@ -242,5 +331,6 @@ module.exports = {
     UpdatePostContent,
     SubmitPost,
     createAboutPost,
+    updateHighlightedText
     
 }

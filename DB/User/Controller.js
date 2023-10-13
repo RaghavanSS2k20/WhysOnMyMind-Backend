@@ -316,6 +316,7 @@ const getLikedPostsByUser = async(req,res)=>{
         res.json(401).json({message:'please login to get liked post'})
     }
 }
+//localhost http://localhost:8088/api/user/get/email/:email
 const getUserByEmail = async(req,res)=>{
     if(!req.params.email){
         return res.status(400).json({message:'rechek value'})
@@ -323,7 +324,7 @@ const getUserByEmail = async(req,res)=>{
     try{
         console.log(req.params.email)
         const user = await User.findOne({email:req.params.email})
-        if(!user){return res.status(401).json({message:'rechek value'})}
+        if(!user){return res.status(404).json({message:'user not found rechek value'})}
 
         try{
         await user.populate([{

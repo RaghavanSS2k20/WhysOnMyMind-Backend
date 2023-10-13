@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const app = express()
 
 
-const port = 8088
+const port = process.env.PORT || 8088
 const connect = require('./config/connect')
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
@@ -17,24 +17,34 @@ const User = require('./DB/User/Model')
 const Posts = require('./DB/Post/Routes')
 const UserRouter = require('./DB/User/Routes')
 dotenv.config()
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cookieParser());
+app.use(cookieParser(process.env.APP_SECRET));
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'https://4a08-2409-408d-1e13-b69f-65b8-971f-a872-2a7c.ngrok-free.app'
     
   ],
   methods:['GET','POST','PUT', 'DELETE','PATCH'],
 credentials: true }))
-
+app.set("trust proxy", 1);
 app.use(
     session({
       secret: process.env.APP_SECRET,
       resave: false,
       saveUninitialized: false,
-      store: MongoStore.create({ mongoUrl: "mongodb+srv://raghavan20pw26:raghav0175@assignment.wbcf3qb.mongodb.net/?retryWrites=true&w=majority" }),
+      proxy: true,
+      store: MongoStore.create({ mongoUrl: process.env.MONGOURI  }),
+      // cookie:{
+      //   maxAge : 3600000,
+      //   secure: false,
+      //   sameSite:'none',
+      //   domain:"4a08-2409-408d-1e13-b69f-65b8-971f-a872-2a7c.ngrok-free.app"
+       
+      // }
       //store: new MongoStore({ mongooseConnection: mongoose.connection}),
     })
   );
@@ -45,6 +55,7 @@ app.post('/register', function (req, res) {
     User.register(
       new User({ 
         email: req.body.email, 
+        //64f5e06882c898e85ba2718a
        
       }), req.body.password, function (err, msg) {
         if (err) {
@@ -56,6 +67,7 @@ app.post('/register', function (req, res) {
     )
   })
   app.post('/login', async (req, res, next) => {
+    console.log("poda punda",req.session.passport)
     console.log("hiiiiiiiii",req.body)
     const user = await User.find({'email':req.body.email})
     console.log(user)
@@ -92,7 +104,8 @@ app.post('/register', function (req, res) {
     res.send("hiiii")
   })
 app.get('/write',(req,res)=>{
-  console.log(req.user)
+  console.log("original url", `${req.protocol}://${req.get('host')}${req.originalUrl}`)
+  console.log("cooojkisiisiisis",req.headers.cookie)
     if( req.isAuthenticated()){
     try{
         const filePath= path.join(process.cwd(),'./landing.md')
