@@ -228,12 +228,14 @@ const unlikePost = async (req, res) => {
 };
 
 const getPinnedPosts = async(req,res)=>{
+    console.log("From ",req.originalUrl)
     if(req.isAuthenticated()){
         const isObject = req.query.asObject
         
         if(!isObject){
         try{
             const id = req.user.id;
+
             
             // console.log("id of the user ", id)
             const user = req.user;
