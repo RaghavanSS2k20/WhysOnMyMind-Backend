@@ -257,10 +257,12 @@ const UpdatePostContent = async (req,res)=>{
         const newContent  = req.body.content
         console.log("The content is ",newContent)
         try
-        {const updatedPost = await Post.findByIdAndUpdate(id,{ $set: { content: newContent } },{ new: true })
+        {
+            const updatedPost = await Post.findByIdAndUpdate(id,{ $set: { content: newContent } },{ new: true })
         if(!updatedPost){
             return req.status(404).json({message:'post not found'})
         }
+        await updatedPost.save()
         console.log("The content is updtaed ",newContent.content )
         return res.status(200).json({message:'update succesfull '})}
         catch(e){
