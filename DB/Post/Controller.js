@@ -260,7 +260,8 @@ const UpdatePostContent = async (req,res)=>{
         if(!updatedPost){
             return req.status(404).json({message:'post not found'})
         }
-        return res.status(200).json({message:'update succesfull'})}
+        console.log("The content is updtaed ",newContent.content )
+        return res.status(200).json({message:'update succesfull '})}
         catch(e){
             console.log('upodate failoed ', e)
             res.status(500).json({message:'internal server error',error:e})
