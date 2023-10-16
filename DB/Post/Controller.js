@@ -263,7 +263,7 @@ const UpdatePostContent = async (req,res)=>{
             return req.status(404).json({message:'post not found'})
         }
         await updatedPost.save()
-        console.log("The content is updtaed ",newContent.content )
+        console.log("The content is updtaed ",updatedPost.content )
         return res.status(200).json({message:'update succesfull '})}
         catch(e){
             console.log('upodate failoed ', e)
