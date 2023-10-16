@@ -255,6 +255,7 @@ const UpdatePostContent = async (req,res)=>{
         console.log(req.originalUrl)
         const id = req.params.id
         const newContent  = req.body.content
+        console.log("The content is ",newContent)
         try
         {const updatedPost = await Post.findByIdAndUpdate(id,{ $set: { content: newContent } },{ new: true })
         if(!updatedPost){
