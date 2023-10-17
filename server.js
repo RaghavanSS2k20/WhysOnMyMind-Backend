@@ -25,7 +25,7 @@ app.use(cookieParser(process.env.APP_SECRET));
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://whyonm.vercel.app/'
+    'https://whyonm.vercel.app'
     
   ],
   methods:['GET','POST','PUT', 'DELETE','PATCH'],
