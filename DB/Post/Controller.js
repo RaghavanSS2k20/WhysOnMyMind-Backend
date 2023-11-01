@@ -45,9 +45,61 @@ const getImg = (md)=>{
 const getAllPosts = async(req,res)=>{  
     console.log(req.user) 
     try{
+            const flag = req.query.clientSide
+            if(!flag){
+                try{
+            const posts = await Post.find({ status: "POSTED" }).sort({createdAt:-1}).populate('user', 'email profileName');
+            res.status(200).json({'posts':posts})
+                }catch(e){
+                    console.log(e)
+                    res.status(500).json({"message":'Internal Server Error','error':e})
+
+                }
+            }else{
+                if(req.user){                                         
+                try{
+                   
+
+                    // Query the Post model to fetch all posts
+                    const allPosts = await Post.find({});
+                
+                    // Create an array to store the posts with additional information
+                    const enhancedPosts = [];
+                
+                    // Iterate through the posts
+                    for (const post of allPosts) {
+                      // Check if the post is liked by the user
+                      const isLikedByUser = req.user.likedPost.includes(post._id);
+                
+                      // Check if the post is pinned by the user
+                      const isPinnedByUser = req.user.pinnedPost.includes(post._id);
+                
+                      // Create an object with the additional information
+                      const enhancedPost = {
+                        post: post,
+                        isLikedByUser: isLikedByUser,
+                        isPinnedByUser: isPinnedByUser,
+                      };
+                
+                      // Push the enhanced post to the array
+                      enhancedPosts.push(enhancedPost);
+                    }
+                
+                    // Send the enhanced posts as a response
+                    res.status(200).json({ allPosts: enhancedPosts });                  
+
+
+                }catch(e){
+                    console.log(e)
+                    res.status(500).json({"message":'Internal Server Error','error':e})
+                }
+
+            }else{
+                return res.status(401).json({"message":"please login to run this API client side"})
+            }
+        }
         
-        const posts = await Post.find({ status: "POSTED" }).sort({createdAt:-1}).populate('user', 'email profileName');
-        res.status(200).json({'posts':posts})
+        
     }
     catch(e){
         console.log(e)
@@ -57,6 +109,7 @@ const getAllPosts = async(req,res)=>{
 
 
 }
+
 //http://localhost:8088/api/post/:id
 const getById = async(req,res)=>{
     console.log(req.session)
