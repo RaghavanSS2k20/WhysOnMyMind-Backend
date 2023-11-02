@@ -136,6 +136,9 @@ app.get('/api/test',(req,res)=>{
 })
 app.get('/api/cookies',(req,res)=>{
   try{
+    console.log("headers : ",req.headers)
+    console.log("url : ", req.originalUrl)
+    console.log("cookies: ", req.cookies)
     res.status(200).json({cookies:req.cookies})
 
   }catch(e){
