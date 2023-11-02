@@ -134,6 +134,15 @@ app.get('/api/test',(req,res)=>{
     }
     
 })
+app.get('/api/cookies',(req,res)=>{
+  try{
+    res.status(200).json({cookies:req.cookies})
+
+  }catch(e){
+    res.status(500).json({message:'error',error:e})
+
+  }
+})
 app.delete('/logout',(req,res,next)=>{
     req.logout((error)=>{
         if(error){
