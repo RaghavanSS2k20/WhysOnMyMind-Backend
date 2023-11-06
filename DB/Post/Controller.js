@@ -118,13 +118,18 @@ const getById = async(req,res)=>{
         const id = req.params.id;
         console.log(id)
         try{
-            const post = await Post.findById(id);
+            const post = await Post.findById(id).populate('user');
             if(post)
             {
                 res.status(200).json({
                 isAuthenticated:false,
                 "message":'post found',
-                'post':post
+                'post':post,
+                userData:{
+                    email:post.user.email,
+                    profileName:post.user.profileName
+
+                }
             })}
             else{
                 res.status(404).json({
@@ -169,6 +174,7 @@ const getById = async(req,res)=>{
 
     }
 }
+
 //GET /api/post/get/highlight/:id
 const getHighlightsForPostId = async(req,res)=>{
     if(req.user){
@@ -243,6 +249,31 @@ try{
 }else{
     return res.status(401).json({ message: 'please login to highlight',});
 }}
+// GET /api/post/ispinned/:id
+const isPinnedByUser =  async(req,res)=>{
+    const id = req.params.id;
+    if(req.user){
+        try{
+            const userPinnedPosts = req.user.pinnedPost
+            if (userPinnedPosts.includes(id)) {
+                // The post with the given id is in the user's pinned posts
+                res.status(200).json({ isPinned: true });
+            } else {
+                // The post with the given id is not in the user's pinned posts
+                res.status(200).json({ isPinned: false });
+            }
+        }catch(e){
+            res.status(500).json({message:'error while checking is pinned by user or not', e})
+        }
+
+
+    }else{
+        res.status(401).json({message:'authmissing for is pinned or not'})
+
+    }
+
+
+}
 //http://localhost:8088/api/post/about
 const createAboutPost = async(req,res)=>{
     if(req.isAuthenticated()){
@@ -408,6 +439,8 @@ module.exports = {
     SubmitPost,
     createAboutPost,
     updateHighlightedText,
-    getHighlightsForPostId
+    getHighlightsForPostId,
+    isPinnedByUser,
+
     
 }

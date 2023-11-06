@@ -6,17 +6,20 @@ const {getAllPosts,
     UpdatePostContent,
     updateHighlightedText,
     getHighlightsForPostId, 
-    SubmitPost
+    SubmitPost,
+    isPinnedByUser
 } = require('./Controller')
 const router = express.Router()
 //http://localhost:8088/api/post
 router.get('/:id',getById);
 router.get('/',getAllPosts)
 router.get("/get/highlight/:id",getHighlightsForPostId)
+router.get('/ispinned/:id', isPinnedByUser)
 router.post('/create',CreatePost)
 router.post('/about', createAboutPost)
 router.patch('/update/content/:id',UpdatePostContent)
 router.patch('/submit',SubmitPost)
 router.patch('/update/highlight/:id',updateHighlightedText)
+
 
 module.exports = router;
