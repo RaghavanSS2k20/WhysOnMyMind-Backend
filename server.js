@@ -40,7 +40,7 @@ app.use(
       store: MongoStore.create({ mongoUrl: process.env.MONGOURI  }),
       cookie:{
         maxAge : 3600000,
-        secure: true,
+       secure: true,
         sameSite:'none',
        
        
@@ -160,4 +160,4 @@ app.use('/api/user',UserRouter)
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-
+module.exports = app

@@ -169,6 +169,25 @@ const getById = async(req,res)=>{
 
     }
 }
+//GET /api/post/get/highlight/:id
+const getHighlightsForPostId = async(req,res)=>{
+    if(req.user){
+        try{
+            const postId = req.params.id;
+            console.log(postId)
+            const post = await Post.findById(postId)
+            const userHighlights = post.highlights.filter((highlight) => highlight.user.equals(req.user.id));
+            res.status(200).json({ highlights: userHighlights});
+
+        }catch(e){
+            console.log(e);
+            res.status(500).json({message:'Internal server error while getting highlkigt ', error:e})
+        }
+    }else{
+        console.log("coookies not set for getiing highlights")
+        res.status(401).json({ message: 'Unauthorized' });
+    }
+}
 //PATCH http://localhost:8088/api/post/update/highlight/:id
 const updateHighlightedText = async(req,res)=>{
     if(req.user)
@@ -388,6 +407,7 @@ module.exports = {
     UpdatePostContent,
     SubmitPost,
     createAboutPost,
-    updateHighlightedText
+    updateHighlightedText,
+    getHighlightsForPostId
     
 }

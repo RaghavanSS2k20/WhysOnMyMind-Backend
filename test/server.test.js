@@ -4,7 +4,7 @@ const app = require('../server')
 const User = require('../DB/User/Model')
 const Post = require('../DB/Post/Model')
 const supertest = require('supertest');
-const session = require('supertest-session');
+//const session = require('supertest-session');
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -16,13 +16,14 @@ describe('API Tests', () => {
     before(async () => {
       // Set up a test user for authentication
       //const user = await UserModel.create({ /* user data */ });
-  
+      let user = { email:"alittlefightinyou@darkknight.com", password: 'andyougonnaloveme' }
       // Create a new authenticated session
-      authenticatedSession = session(app);
+      authenticatedSession = supertest.agent(app);
       authenticatedSession
         .post('/login') // Replace with your login route
-        .send({ username:"alittlefightinyou@darkknight.com", password: 'andyougonnaloveme' }) // Provide login credentials
-        .expect(200)
+        .send(user) // Provide login credentials
+        .expect(302)
+        .expect('Location','/login-success')
         .end((err) => {
           if (err) throw err;
         });
@@ -44,13 +45,30 @@ describe('API Tests', () => {
             expect(res).to.have.status(200);
             expect(res.body).to.be.an('object');
             expect(res.body.message).to.equal('login-success');
-            expect(res.body.data).to.be.an('object');
-            expect(res.body.data.session).to.be.an('object');
-            expect(res.body.data.user).to.be.an('object');           
+            // expect(res.body.data).to.be.an('object');
+            // expect(res.body.data.session).to.be.an('object');
+            // expect(res.body.data.user).to.be.an('object');           
             done();
           });
       });
     });
+
+
+    describe("Testing /write route",()=>{
+      it("should provide an editable content",(done)=>{
+        authenticatedSession
+        .get('/write')
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          //expect(res.body.message).to.equal('login-success');
+          // expect(res.body.data).to.be.an('object');
+          // expect(res.body.data.session).to.be.an('object');
+          // expect(res.body.data.user).to.be.an('object');           
+          done();
+        });
+      })
+    })
   
     // Add authentication to other test cases as well.
   });

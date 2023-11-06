@@ -6,7 +6,7 @@ const fs = require('fs'); // Import the 'fs' module to read the Markdown file
 
 
 // Read Markdown content from a file
-const mdownContent = fs.readFileSync('../Beriko.md', 'utf8');
+//const mdownContent = fs.readFileSync('../Beriko.md', 'utf8');
 const markdownContent = `
 
 # How did We do It
