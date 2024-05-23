@@ -71,7 +71,7 @@ app.post('/register', function (req, res) {
     )
   })
   app.post('/login', async (req, res, next) => {
-    console.log("poda punda",req.session.passport)
+    // console.log("poda punda",req.session.passport)
     console.log("hiiiiiiiii",req.body)
     const user = await User.find({'email':req.body.email})
     console.log(user)
@@ -84,7 +84,7 @@ app.post('/register', function (req, res) {
   app.get('/login-failure', (req, res, next) => {
     console.log('failesss')
     console.log(req.user);
-    res.send('Login Attempt Failed.').status(401);
+    return res.status(401).json({message:'login-failed'});
   });
   
   app.get('/login-success', (req, res, next) => {
