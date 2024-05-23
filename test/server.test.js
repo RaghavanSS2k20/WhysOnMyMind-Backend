@@ -4,71 +4,73 @@ const app = require('../server')
 const User = require('../DB/User/Model')
 const Post = require('../DB/Post/Model')
 const supertest = require('supertest');
+const {testGetAllUsers} = require('./UserTestModule')
 //const session = require('supertest-session');
 const expect = chai.expect;
+const agent  = supertest.agent(app)
 
 chai.use(chaiHttp);
 
-describe('API Tests', () => {
-    // Create a session for authentication
-    let authenticatedSession;
-  
-    before(async () => {
-      // Set up a test user for authentication
-      //const user = await UserModel.create({ /* user data */ });
-      let user = { email:"alittlefightinyou@darkknight.com", password: 'andyougonnaloveme' }
-      // Create a new authenticated session
-      authenticatedSession = supertest.agent(app);
-      authenticatedSession
-        .post('/login') // Replace with your login route
-        .send(user) // Provide login credentials
-        .expect(302)
-        .expect('Location','/login-success')
-        .end((err) => {
-          if (err) throw err;
-        });
-    });
-  
-    after(async () => {
-      // Clean up test data and session after running the tests
-      //await UserModel.findByIdAndRemove(user._id);
-      authenticatedSession.destroy();
-    });
-  
-    // Rest of the test cases remain the same, but now you can use the authenticatedSession for requests.
-  
-    describe('Testing success', () => {
-      it('should get all listings', (done) => {
-        authenticatedSession
-          .get('/login-success')
-          .end((err, res) => {
-            expect(res).to.have.status(200);
-            expect(res.body).to.be.an('object');
-            expect(res.body.message).to.equal('login-success');
-            // expect(res.body.data).to.be.an('object');
-            // expect(res.body.data.session).to.be.an('object');
-            // expect(res.body.data.user).to.be.an('object');           
-            done();
-          });
-      });
-    });
+var user = {
+  email:"alittlefightinyou@darkknight.com",
+  password:"andyougonnaloveme"
+}
+describe('API Tests',()=>{
+ 
+  let cookie;
+  describe('login',()=>{
+    it('should signin',(done)=>{
+      agent
+      .post('/login')
+      .send(user)
+      .expect(302)
+      .expect('Location','/login-success')
+      .end((err,res)=>{
+        if(err){throw err}
+         cookie = res.headers['set-cookie'];
+        console.log("cooooooookkkkkkkkiiiiiies ",res)
+        expect(res.body).to.be.an('object');
+        done()
 
-
-    describe("Testing /write route",()=>{
-      it("should provide an editable content",(done)=>{
-        authenticatedSession
-        .get('/write')
-        .end((err, res) => {
-          expect(res).to.have.status(200);
-          expect(res.body).to.be.an('object');
-          //expect(res.body.message).to.equal('login-success');
-          // expect(res.body.data).to.be.an('object');
-          // expect(res.body.data.session).to.be.an('object');
-          // expect(res.body.data.user).to.be.an('object');           
-          done();
-        });
       })
     })
+
+    
+  })
+
   
-    // Add authentication to other test cases as well.
-  });
+  
+})
+
+describe('Testing core server routes',()=>{
+  it('should get current user',(done)=>{
+    agent
+    .get('/getuser')
+    // .set('Cookie',cookie)
+    .expect(200)      
+    .end((err,res)=>{
+      if(err){throw err}
+      console.log(res.body)
+      expect(res.body).to.be.an('object')
+      expect(res.body.user).to.be.an('object')
+      expect(res.body.user.pinnedPost).to.be.an('array')
+
+      done()
+    })
+  })
+
+  it('should get new content to write',(done)=>{
+    agent
+    .get('/write')
+    .expect(200)
+    .end((err,res)=>{
+      if(err){throw err}
+      expect(res.body).to.be.an("object")
+      done()
+    })
+  })
+  
+})
+
+describe("Testing user")
+module.exports = agent

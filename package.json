@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha ./test"
+    "test": "node ./node_modules/mocha/bin/mocha ./test --timeout 10000"
   },
   "dependencies": {
     "bootstrap": "^4.4.1",

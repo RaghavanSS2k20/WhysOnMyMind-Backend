@@ -17,7 +17,11 @@ const User = require('./DB/User/Model')
 const Posts = require('./DB/Post/Routes')
 const UserRouter = require('./DB/User/Routes')
 dotenv.config()
+console.log("mutton nalli kari ", process.env.NODE_ENV)
+if(process.env.NODE_ENV==="dev"){
+  console.log("WARNING, THIS APP IS IN DEVELPOMENT MODE MODE")
 
+}
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -40,7 +44,7 @@ app.use(
       store: MongoStore.create({ mongoUrl: process.env.MONGOURI  }),
       cookie:{
         maxAge : 3600000,
-       secure: true,
+       secure: process.env.NODE_ENV ==="prod"?true:false,
         sameSite:'none',
        
        
@@ -80,7 +84,7 @@ app.post('/register', function (req, res) {
   app.get('/login-failure', (req, res, next) => {
     console.log('failesss')
     console.log(req.user);
-    res.send('Login Attempt Failed.');
+    res.send('Login Attempt Failed.').status(401);
   });
   
   app.get('/login-success', (req, res, next) => {
