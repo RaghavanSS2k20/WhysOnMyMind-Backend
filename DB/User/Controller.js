@@ -308,14 +308,17 @@ const getLikedPostsByUser = async(req,res)=>{
             console.log("pinned posts",likedPosts)
 
             
-                return res.status(200).json({"message":'got',"post":likedPosts})
+                 res.status(200).json({"message":'got',"post":likedPosts})
+                 return
             
         }catch(e){
             console.log(e)
-            return res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
+            res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
+            return
         }
     }else{
-        return res.json(401).json({message:'please login to get liked post'})
+        res.json(401).json({message:'please login to get liked post'})
+        return
     }
 }
 //localhost http://localhost:8088/api/user/get/email/:email
