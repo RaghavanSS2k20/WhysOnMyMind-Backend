@@ -249,11 +249,11 @@ const getPinnedPosts = async(req,res)=>{
             console.log("pinned posts",pinnedPosts)
 
             
-                res.status(200).json({"message":'got',"pinned":pinnedPosts})
+                return res.status(200).json({"message":'got',"pinned":pinnedPosts})
             
         }catch(e){
             console.log(e)
-            res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
+            return res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
         }
     }else{
         try{
@@ -266,11 +266,11 @@ const getPinnedPosts = async(req,res)=>{
 
         }catch(e){
             console.log(e)
-            res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
+            return res.status(500).json({message:"Internal server error while getting pinned posts ", error:e})
         }
     }
     }else{
-        res.status(401).json({message:"please login to get pinned posts"})
+       return res.status(401).json({message:"please login to get pinned posts"})
 
     }
 }

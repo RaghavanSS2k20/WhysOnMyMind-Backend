@@ -94,14 +94,14 @@ app.post('/register', function (req, res) {
       'session':req.session,
       'user':req.user
     }
-    res.json({message:'login-success',data:data});
+    return res.json({message:'login-success',data:data});
   });
   app.get('/getuser',(req,res,next)=>{
     if(req.isAuthenticated()){
-        res.json({'user':req.user})
+        return res.json({'user':req.user})
     }
     else{
-      res.status(401).json({message:'please login again'})
+      return res.status(401).json({message:'please login again'})
     }
   })
   app.get('/test',(req,res)=>{
