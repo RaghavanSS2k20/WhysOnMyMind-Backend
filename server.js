@@ -88,7 +88,7 @@ app.post('/register', function (req, res) {
   });
   
   app.get('/login-success', (req, res, next) => {
-    console.log(req.session);
+    console.log("From login : ",req.session);
     console.log(req.user)
     data={
       'session':req.session,

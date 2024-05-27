@@ -177,6 +177,7 @@ const getById = async(req,res)=>{
 
 //GET /api/post/get/highlight/:id
 const getHighlightsForPostId = async(req,res)=>{
+    console.log("From highlights : ", req.user)
     if(req.user){
         try{
             const postId = req.params.id;
