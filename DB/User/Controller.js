@@ -317,7 +317,7 @@ const getLikedPostsByUser = async(req,res)=>{
             return
         }
     }else{
-        res.json(401).json({message:'please login to get liked post'})
+        res.status(401).json({message:'please login to get liked post'})
         return
     }
 }
