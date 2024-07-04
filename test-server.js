@@ -6,7 +6,7 @@ const LocalStrategy = require('passport-local').Strategy;
 /*
   Include the user model for saving to MongoDB VIA mongoose
 */
-const User = require("./DB/User/Model");
+const User = require("./DB/User/Model")
 
 /*
   Database connection -- We are using MongoDB for this tutorial
