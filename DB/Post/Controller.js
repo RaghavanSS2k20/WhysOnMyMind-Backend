@@ -383,7 +383,7 @@ const SubmitPost = async (req,res)=>{
     if(req.isAuthenticated()){
         console.log(req.session)
         const id = req.session.postId;
-        
+        let heading;
         try{
             console.log(req.originalUrl,id)
             const p = await Post.findById(id)
@@ -392,7 +392,8 @@ const SubmitPost = async (req,res)=>{
             try{
              desc = getDesc(p.content)
             imgSrc = getImg(p.content)
-            let heading  = req.body.title
+            heading  = req.body.title
+            console.log("heading", heading)
             }
             catch(e){console.log(e)}
             if(req.body.title === "A Valid name of your work?"){
@@ -424,6 +425,7 @@ const SubmitPost = async (req,res)=>{
             return res.status(200).json({message:'posted succesfully',postID:post.id,user:req.user.id,post:post})
 
         }catch(e){
+            console.log("Error while submitting", e)
             res.status(500).json({message:'internal server error while posting', 'error':e})
         }
 
