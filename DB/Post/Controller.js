@@ -424,7 +424,7 @@ const SubmitPost = async (req,res)=>{
             return res.status(200).json({message:'posted succesfully',postID:post.id,user:req.user.id,post:post})
 
         }catch(e){
-            res.status(500).json({message:'internal server error while posting'})
+            res.status(500).json({message:'internal server error while posting', 'error':e})
         }
 
     }else{
