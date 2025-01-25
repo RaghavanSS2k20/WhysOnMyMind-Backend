@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const app = express()
 
 
-const port = process.env.PORT || 8088
+const port = process.env.PORT || 8088 
 const connect = require('./config/connect')
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
@@ -46,6 +46,7 @@ app.use(
         maxAge : 3600000,
        secure: process.env.NODE_ENV ==="prod"?true:false,
         sameSite:'none',
+        
        
        
       }
